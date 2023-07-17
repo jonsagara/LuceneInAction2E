@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.33906.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{7352B9C5-3929-4279-BE03-D39EC84AD104}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		global.json = global.json
+		nuget.config = nuget.config
+	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Indexer", "src\Chapter01\Indexer\Indexer.fsproj", "{28DBC37A-2C94-4168-9395-8719940204B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{28DBC37A-2C94-4168-9395-8719940204B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28DBC37A-2C94-4168-9395-8719940204B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28DBC37A-2C94-4168-9395-8719940204B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28DBC37A-2C94-4168-9395-8719940204B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED959186-F097-4CEA-862D-AD8C6E72481F}
+	EndGlobalSection
+EndGlobal
