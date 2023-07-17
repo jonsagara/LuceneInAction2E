@@ -9,13 +9,16 @@ open Lucene.Net.Analysis.Standard
 open Lucene.Net.Util
 
 type Indexer(indexDir : string) =
-
     let mutable _writer : IndexWriter = null
 
     do
+        printfn $"Index directory: {Path.GetFullPath indexDir}"
         let dir = FSDirectory.Open indexDir
         let analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48)
+
         let config = IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer)
+        config.OpenMode <- OpenMode.CREATE
+
         _writer <- new IndexWriter(dir, config)
 
     interface IDisposable with
@@ -32,19 +35,12 @@ type Indexer(indexDir : string) =
 
         doc
 
-    member private this.indexFile (fileName : string) =
-        printfn $"Indexing {Path.GetFullPath fileName}..."
-        let doc = this.getDocument fileName
-        _writer.AddDocument doc
-
     member this.index (dataDir : string) =
-        //let di = new DirectoryInfo(dataDir)
-        //let txtFiles = di.GetFiles("*.txt")
-        let txtFiles = System.IO.Directory.GetFiles(dataDir, "*.txt", SearchOption.TopDirectoryOnly)
-        //txtFiles
-        //|> Array.iter (fun f -> printfn $".txt file: {f} ({Path.GetFullPath f})")
-        
-        txtFiles
-        |> Array.iter (fun f -> this.indexFile f)
+        IO.Directory.GetFiles(dataDir, "*.txt", SearchOption.TopDirectoryOnly)
+        |> Array.iter (fun fileName -> 
+            printfn $"Indexing {Path.GetFullPath fileName}..."
+            let doc = this.getDocument fileName
+            _writer.AddDocument doc)
 
+        _writer.Commit()
         _writer.NumDocs
