@@ -6,16 +6,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="data\*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<Compile Include="Indexer.fs" />
+		<Compile Include="Searcher.fs" />
 		<Compile Include="Program.fs" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
 		<PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
+		<PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="IndexProperties.fs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
+	</ItemGroup>
+
+</Project>

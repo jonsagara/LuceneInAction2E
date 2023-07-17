@@ -7,6 +7,7 @@ open Lucene.Net.Index
 open Lucene.Net.Store
 open Lucene.Net.Analysis.Standard
 open Lucene.Net.Util
+open LuceneInAction2E.Common
 
 type Indexer(indexDir : string) =
     let mutable _writer : IndexWriter = null
@@ -14,9 +15,9 @@ type Indexer(indexDir : string) =
     do
         printfn $"Index directory: {Path.GetFullPath indexDir}"
         let dir = FSDirectory.Open indexDir
-        let analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48)
+        let analyzer = new StandardAnalyzer(IndexProperties.luceneVersion)
 
-        let config = IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer)
+        let config = IndexWriterConfig(IndexProperties.luceneVersion, analyzer)
         config.OpenMode <- OpenMode.CREATE
 
         _writer <- new IndexWriter(dir, config)
@@ -29,7 +30,7 @@ type Indexer(indexDir : string) =
     member private this.getDocument (fileName : string) =
         let doc = Document()
 
-        doc.Add(TextField("contents",File.OpenText fileName))
+        doc.Add(TextField("contents", File.OpenText fileName))
         doc.Add(StringField("filename", Path.GetFileName fileName, Field.Store.YES))
         doc.Add(StringField("fullpath", Path.GetFullPath fileName, Field.Store.YES))
 
