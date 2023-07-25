@@ -6,7 +6,6 @@ open Lucene.Net.Documents
 open Lucene.Net.Index
 open Lucene.Net.Store
 open Lucene.Net.Analysis.Standard
-open Lucene.Net.Util
 open LuceneInAction2E.Common
 
 type Indexer(indexDir : string) =
@@ -19,6 +18,9 @@ type Indexer(indexDir : string) =
 
         let config = IndexWriterConfig(IndexProperties.luceneVersion, analyzer)
         config.OpenMode <- OpenMode.CREATE
+
+        // DEBUG. Very verbose.
+        //config.SetInfoStream(Console.Out) |> ignore
 
         _writer <- new IndexWriter(dir, config)
 
