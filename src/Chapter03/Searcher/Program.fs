@@ -8,7 +8,8 @@ module Program =
     [<EntryPoint>]
     let main argv =
 
-        BasicSearchingTest.testTerm()
-        BasicSearchingTest.testQueryParser()
+        //BasicSearchingTest.testTerm()
+        //BasicSearchingTest.testQueryParser()
+        BasicSearchingTest.testNearRealTime()
         
         0

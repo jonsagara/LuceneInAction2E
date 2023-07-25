@@ -7,6 +7,8 @@ open Lucene.Net.Search
 open Lucene.Net.Index
 open Lucene.Net.QueryParsers.Classic
 open Lucene.Net.Analysis.Core
+open Lucene.Net.Analysis.Standard
+open Lucene.Net.Documents
 
 module BasicSearchingTest = 
 
@@ -19,6 +21,12 @@ module BasicSearchingTest =
             printfn $"\texpected: {expected}"
             printfn $"\tactual: {actual}"
         
+    let private assertTrue message (predicate : bool) =
+        if predicate then
+            printfn $"{message}: predicate is true as expected"
+        else
+            printfn $"ERROR"
+            printfn $"{message}: predicate is false"
             
     
     let testTerm () =
@@ -54,3 +62,55 @@ module BasicSearchingTest =
         let query2 = parser.Parse("mock OR junit")
         let docs2 = searcher.Search(query2, 10)
         assertEquals "Ant in Action, JUnit in Action, Second Edition" 2 docs2.TotalHits
+
+    let testNearRealTime() =
+        
+        use indexDir = FSDirectory.Open(IndexProperties.bookIndexDirFromBinFolder)
+        
+        let writerConfig = IndexWriterConfig(IndexProperties.luceneVersion, new StandardAnalyzer(IndexProperties.luceneVersion))
+        writerConfig.OpenMode <- OpenMode.CREATE
+        use writer = new IndexWriter(indexDir, writerConfig)
+
+        [| 0 .. 9 |]
+        |> Array.iter (fun ix ->
+            let doc = Document()
+            doc.Add(StringField("id", ix.ToString(), Field.Store.NO))
+            doc.Add(TextField("text", "aaa", Field.Store.NO))
+            writer.AddDocument(doc)
+            )
+
+        // Create a near-real-time reader.
+        use reader = writer.GetReader(applyAllDeletes = true)
+        let searcher = IndexSearcher(reader)
+
+        // Run a quick search.
+        let query = TermQuery(Term("text", "aaa"))
+        let docs = searcher.Search(query, 1)
+        assertEquals "Term query for text 'aaa'" 10 docs.TotalHits
+
+        // Delete a document.
+        writer.DeleteDocuments(Term("id", "7"))
+
+        // Add another document.
+        let doc = Document()
+        doc.Add(StringField("id", "11", Field.Store.NO))
+        doc.Add(TextField("text", "bbb", Field.Store.NO))
+        writer.AddDocument(doc)
+
+        // Open a new near-real-time reader.
+        use newReader = DirectoryReader.OpenIfChanged(reader)
+        assertTrue "newReader is not null" (newReader |> isNull |> not)
+
+        // Close the old reader.
+        reader.Dispose()
+
+        // Ensure the old query matches only 9 documents this time.
+        let searcher2 = IndexSearcher(newReader)
+        let docs2 = searcher2.Search(query, 10)
+        assertEquals "Search modified index" 9 docs2.TotalHits
+
+        // Create a new query for bbb and ensure there's only one match.
+        let query2 = TermQuery(Term("text", "bbb"))
+        let docs3 = searcher2.Search(query2, 1)
+        assertEquals "Query text for bbb" 1 docs3.TotalHits
+
