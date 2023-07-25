@@ -2,6 +2,7 @@
 
 open System.Diagnostics
 open System.IO
+open LuceneInAction2E.Common
 
 module Program =
 
@@ -12,8 +13,8 @@ module Program =
         let dataDir = Path.GetFullPath("./data")
         //printfn $"data: {dataDir}"
 
-        // Put the index into the src directory, in a directory called test_index.
-        let indexDir = Path.GetFullPath(Path.Combine("../../../../..", "test_index"))
+        // Put the index into the src directory.
+        let indexDir = Path.GetFullPath(Path.Combine("../../../../..", IndexProperties.bookIndexName))
         //printfn $"test_index: {indexDir}"
 
         //// Find all .properties files in the data directory and its subdirectories.
