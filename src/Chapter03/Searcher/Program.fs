@@ -9,5 +9,6 @@ module Program =
     let main argv =
 
         BasicSearchingTest.testTerm()
+        BasicSearchingTest.testQueryParser()
         
         0

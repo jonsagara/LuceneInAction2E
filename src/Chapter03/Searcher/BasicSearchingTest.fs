@@ -5,6 +5,8 @@ open LuceneInAction2E.Common
 open Lucene.Net.Store
 open Lucene.Net.Search
 open Lucene.Net.Index
+open Lucene.Net.QueryParsers.Classic
+open Lucene.Net.Analysis.Core
 
 module BasicSearchingTest = 
 
@@ -21,10 +23,9 @@ module BasicSearchingTest =
     
     let testTerm () =
 
-        let indexDirPath = Path.GetFullPath(Path.Combine("../../../../..", IndexProperties.bookIndexName))
-        printfn $"Index directory: {indexDirPath}"
+        printfn $"Index directory: {IndexProperties.bookIndexDirFromBinFolder}"
         
-        use indexDir = FSDirectory.Open(indexDirPath)
+        use indexDir = FSDirectory.Open(IndexProperties.bookIndexDirFromBinFolder)
         use indexReader = DirectoryReader.Open indexDir
         let searcher = IndexSearcher indexReader
         
@@ -36,6 +37,20 @@ module BasicSearchingTest =
         let term2 = Term("subject", "junit")
         let docs = searcher.Search(TermQuery(term2), 10)
         assertEquals "Ant in Action, JUnit in Action, Second Edition" 2 docs.TotalHits
-        
-        ()
 
+
+    let testQueryParser () =
+
+        use indexDir = FSDirectory.Open(IndexProperties.bookIndexDirFromBinFolder)
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher indexReader
+
+        let parser = QueryParser(IndexProperties.luceneVersion, "contents", new SimpleAnalyzer(IndexProperties.luceneVersion))
+
+        let query = parser.Parse("+JUNIT +ANT -MOCK")
+        let docs = searcher.Search(query, 10)
+        assertEquals "QueryParser" 1 docs.TotalHits
+
+        let query2 = parser.Parse("mock OR junit")
+        let docs2 = searcher.Search(query2, 10)
+        assertEquals "Ant in Action, JUnit in Action, Second Edition" 2 docs2.TotalHits
