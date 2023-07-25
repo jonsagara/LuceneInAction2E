@@ -6,10 +6,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Include="MyStandardAnalyzer.fs" />
 		<None Include="data\**\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<Compile Include="MyStandardAnalyzer.fs" />
 		<Compile Include="Indexer.fs" />
 		<Compile Include="Program.fs" />
 	</ItemGroup>

@@ -13,16 +13,19 @@ type Indexer(dataDir : string, indexDir : string) =
     let mutable _writer : IndexWriter = null
 
     /// <summary>
+    /// Equivalent to a stored StringField.
     /// Indexed, not tokenized, omits norms, indexes
     /// <see cref="IndexOptions.DOCS_ONLY"/>, stored
     /// </summary>
     let StringFieldTypeStored = FieldType(IsIndexed = true, OmitNorms = true, IndexOptions = IndexOptions.DOCS_ONLY, IsStored = true, IsTokenized = false)
 
     /// <summary>
+    /// Equivalent to a NOT stored TextField.
     /// Indexed, tokenized, not stored. </summary>
     let TextFieldTypeNotStored = new FieldType(IsIndexed = true, IsTokenized = true)
 
     /// <summary>
+    /// Equivalent to a stored TextField.
     /// Indexed, tokenized, stored. </summary>
     let TextFieldTypeStored = new FieldType(IsIndexed = true, IsTokenized = true, IsStored = true)
 

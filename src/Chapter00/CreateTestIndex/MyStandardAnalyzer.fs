@@ -3,7 +3,6 @@
 open System.IO
 open Lucene.Net.Analysis.Standard
 open Lucene.Net.Util
-open LuceneInAction2E.Common
 open Lucene.Net.Analysis.Util
 open Lucene.Net.Analysis.Core
 open Lucene.Net.Analysis
@@ -12,10 +11,11 @@ open Lucene.Net.Analysis
     The Java sample code shows deriving from StandardAnalyzer to customize its behavior, however, the version
     in Lucene.NET is a sealed class, which means we can't derive from it.
 
-    Instead, mimic the code from 4.8.0.beta00016, but with the additional customizations from the Java version.
+    Instead, mimic the StandardAnalyzer code from 4.8.0.beta00016, but with the additional customizations from 
+    the Java version.
+*)
 
-    ------
-
+(*
     /*
      * Licensed to the Apache Software Foundation (ASF) under one or more
      * contributor license agreements.  See the NOTICE file distributed with
@@ -33,34 +33,6 @@ open Lucene.Net.Analysis
      * limitations under the License.
      */
 *)
-
-(*
-
-    public sealed class StandardAnalyzer : StopwordAnalyzerBase
-    {
-        private class TokenStreamComponentsAnonymousClass : TokenStreamComponents
-        {
-            private readonly StandardAnalyzer outerInstance;
-
-            private readonly StandardTokenizer src;
-
-            public TokenStreamComponentsAnonymousClass(StandardAnalyzer outerInstance, StandardTokenizer src, TokenStream tok)
-                : base(src, tok)
-            {
-                this.outerInstance = outerInstance;
-                this.src = src;
-            }
-
-            protected internal override void SetReader(TextReader reader)
-            {
-                src.MaxTokenLength = outerInstance.maxTokenLength;
-                base.SetReader(reader);
-            }
-        }
-    }
-
-*)
-
 
 /// <summary>
 /// Filters <see cref="StandardTokenizer"/> with <see cref="StandardFilter"/>, 
