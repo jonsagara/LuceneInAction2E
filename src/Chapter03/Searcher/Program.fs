@@ -1,6 +1,5 @@
 ﻿namespace LuceneInAction2E.Chapter03.Searcher
 
-open System.IO
 open LuceneInAction2E.Chatper03.Searcher
 
 module Program =
@@ -10,6 +9,7 @@ module Program =
 
         //BasicSearchingTest.testTerm()
         //BasicSearchingTest.testQueryParser()
-        BasicSearchingTest.testNearRealTime()
+        //BasicSearchingTest.testNearRealTime()
+        BasicSearchingTest.testExplanation();
         
         0

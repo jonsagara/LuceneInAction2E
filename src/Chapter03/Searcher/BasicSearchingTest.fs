@@ -114,3 +114,26 @@ module BasicSearchingTest =
         let docs3 = searcher2.Search(query2, 1)
         assertEquals "Query text for bbb" 1 docs3.TotalHits
 
+    let testExplanation () =
+        
+        use indexDir = FSDirectory.Open IndexProperties.bookIndexDirFromBinFolder
+
+        let queryParser = QueryParser(IndexProperties.luceneVersion, "contents", new SimpleAnalyzer(IndexProperties.luceneVersion))
+        let query = queryParser.Parse("junit")
+        printfn $"Query: {query.ToString()}"
+
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher(indexReader)
+        let topDocs = searcher.Search(query, 10)
+
+        topDocs.ScoreDocs
+        |> Array.iter (fun scoreDoc ->
+            let explanation = searcher.Explain(query, scoreDoc.Doc)
+
+            printfn "----------"
+            let doc = searcher.Doc scoreDoc.Doc
+            let title = doc.Get("title")
+            printfn $"{title}"
+            printfn $"{explanation.ToString()}"
+            ())
+
