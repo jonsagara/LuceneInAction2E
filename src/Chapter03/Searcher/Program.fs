@@ -16,6 +16,7 @@ module Program =
         //BasicSearchingTest.testInclusiveNumericRangeQuery()
         //BasicSearchingTest.testExclusiveNumericRangeQuery()
         //BasicSearchingTest.testPrefixQuery()
-        BasicSearchingTest.testBooleanAndQuery()
+        //BasicSearchingTest.testBooleanAndQuery()
+        BasicSearchingTest.testBooleanOrQuery()
 
         0

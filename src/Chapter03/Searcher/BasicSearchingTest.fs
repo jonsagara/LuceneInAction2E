@@ -222,4 +222,21 @@ module BasicSearchingTest =
         // At least one of the hits must have the given title.
         assertTrue "Boolean AND query" (TestUtil.hitsIncludeTitle searcher matches "Lucene in Action, Second Edition")
 
-        ()
+    let testBooleanOrQuery () =
+
+        let methodologyBooks = TermQuery(Term("category", "/technology/computers/programming/methodology"))
+        let easternPhilosophyBooks = TermQuery(Term("category", "/philosophy/eastern"))
+
+        let enlightenmentBooks = BooleanQuery()
+        enlightenmentBooks.Add(methodologyBooks, Occur.SHOULD)
+        enlightenmentBooks.Add(easternPhilosophyBooks, Occur.SHOULD)
+
+        use indexDir = FSDirectory.Open IndexProperties.bookIndexDirFromBinFolder        
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher(indexReader)
+
+        let matches = searcher.Search(enlightenmentBooks, 10)
+        printfn $"or = {enlightenmentBooks}"
+
+        assertTrue "Results have Extreme Prog" (TestUtil.hitsIncludeTitle searcher matches "Extreme Programming Explained")
+        assertTrue "Results have Tao" (TestUtil.hitsIncludeTitle searcher matches "Tao Te Ching \u9053\u5FB7\u7D93")
