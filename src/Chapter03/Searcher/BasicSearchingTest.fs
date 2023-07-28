@@ -181,3 +181,24 @@ module BasicSearchingTest =
         
         let docs = searcher.Search(query, 10)
         assertEquals "NumericRangeQuery" 0 docs.TotalHits
+
+    let testPrefixQuery () =
+
+        use indexDir = FSDirectory.Open IndexProperties.bookIndexDirFromBinFolder        
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher(indexReader)
+
+        let term = Term("category", "/technology/computers/programming")
+
+        // Search with a prefix.
+        let prefixQuery = PrefixQuery(term)
+        let prefixDocs = searcher.Search(prefixQuery, 10)
+        let programmingAndBelowHits = prefixDocs.TotalHits
+
+        // Search without a prefix (regular search).
+        let justProgrammingMatches = searcher.Search(TermQuery(term), 10)
+        let justProgrammingHits = justProgrammingMatches.TotalHits
+
+        printfn $"Programming and below: {programmingAndBelowHits}"
+        printfn $"Just programming: {justProgrammingHits}"
+        assertTrue "Programming and below" (programmingAndBelowHits > justProgrammingHits)
