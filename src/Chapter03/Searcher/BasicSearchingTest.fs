@@ -160,5 +160,24 @@ module BasicSearchingTest =
         let docs = searcher.Search(query, 100)
         assertEquals "TermRangeQuery" 3 docs.TotalHits
         
+    let testInclusiveNumericRangeQuery () =
         
+        use indexDir = FSDirectory.Open IndexProperties.bookIndexDirFromBinFolder        
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher(indexReader)
+        
+        let query = NumericRangeQuery.NewInt32Range(field = "pubmonth", min = 200605, max = 200609, minInclusive = true, maxInclusive = true)
+        
+        let docs = searcher.Search(query, 10)
+        assertEquals "NumericRangeQuery" 1 docs.TotalHits
 
+    let testExclusiveNumericRangeQuery () =
+        
+        use indexDir = FSDirectory.Open IndexProperties.bookIndexDirFromBinFolder        
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher(indexReader)
+        
+        let query = NumericRangeQuery.NewInt32Range(field = "pubmonth", min = 200605, max = 200609, minInclusive = false, maxInclusive = false)
+        
+        let docs = searcher.Search(query, 10)
+        assertEquals "NumericRangeQuery" 0 docs.TotalHits
