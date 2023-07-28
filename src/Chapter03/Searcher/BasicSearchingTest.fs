@@ -202,3 +202,24 @@ module BasicSearchingTest =
         printfn $"Programming and below: {programmingAndBelowHits}"
         printfn $"Just programming: {justProgrammingHits}"
         assertTrue "Programming and below" (programmingAndBelowHits > justProgrammingHits)
+
+    let testBooleanAndQuery () =
+
+        // Search the subject field for "search", -AND- restrict the numeric range to the year 2010.
+        let searchingBooks = TermQuery(Term("subject", "search"))
+        let books2010 = NumericRangeQuery.NewInt32Range("pubmonth", 201001, 201012, true, true)
+
+        let searchingBooks2010 = BooleanQuery()
+        searchingBooks2010.Add(searchingBooks,Occur.MUST)
+        searchingBooks2010.Add(books2010, Occur.MUST)
+
+        use indexDir = FSDirectory.Open IndexProperties.bookIndexDirFromBinFolder        
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher(indexReader)
+
+        let matches = searcher.Search(searchingBooks2010, 10)
+
+        // At least one of the hits must have the given title.
+        assertTrue "Boolean AND query" (TestUtil.hitsIncludeTitle searcher matches "Lucene in Action, Second Edition")
+
+        ()
