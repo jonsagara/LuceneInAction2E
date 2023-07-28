@@ -136,4 +136,29 @@ module BasicSearchingTest =
             printfn $"{title}"
             printfn $"{explanation.ToString()}"
             ())
+        
+    let testKeyword () =
+        
+        use indexDir = FSDirectory.Open IndexProperties.bookIndexDirFromBinFolder        
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher(indexReader)
+        
+        let term = Term("isbn", "9781935182023")
+        let query = TermQuery(term)
+        
+        let docs = searcher.Search(query, 10)
+        assertEquals "JUnit in Action, Second Edition" 1 docs.TotalHits
+        
+    let testTermRangeQuery () =
+        
+        use indexDir = FSDirectory.Open IndexProperties.bookIndexDirFromBinFolder        
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher(indexReader)
+        
+        let query = TermRangeQuery.NewStringRange(field = "title2", lowerTerm = "d", upperTerm = "j", includeLower = true, includeUpper = true)
+        
+        let docs = searcher.Search(query, 100)
+        assertEquals "TermRangeQuery" 3 docs.TotalHits
+        
+        
 

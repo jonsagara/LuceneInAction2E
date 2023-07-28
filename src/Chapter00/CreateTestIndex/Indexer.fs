@@ -93,7 +93,7 @@ type Indexer(dataDir : string, indexDir : string) =
         //setFieldWithPositionsAndOffset title2Field
         //doc.Add(title2Field)
         // When we use this form for this specific field, the basic searches on "subject" succeed.
-        let title2Field = TextField("title2", title.ToLower(), Field.Store.YES)
+        let title2Field = StringField("title2", title.ToLower(), Field.Store.YES)
         doc.Add(title2Field)
 
         // split multiple authors into unique field instances

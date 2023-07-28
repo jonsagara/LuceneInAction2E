@@ -10,6 +10,8 @@ module Program =
         //BasicSearchingTest.testTerm()
         //BasicSearchingTest.testQueryParser()
         //BasicSearchingTest.testNearRealTime()
-        BasicSearchingTest.testExplanation();
+        // BasicSearchingTest.testExplanation();
+        // BasicSearchingTest.testKeyword();
+        BasicSearchingTest.testTermRangeQuery();
         
         0
