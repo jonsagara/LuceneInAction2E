@@ -12,21 +12,7 @@ open Lucene.Net.Documents
 
 module BasicSearchingTest = 
 
-    let private assertEquals message expected actual =
-        if expected = actual then
-            printfn $"{message}: {nameof expected} '{expected}' matches {nameof actual} '{actual}'"
-        else
-            printfn $"ERROR"
-            printfn $"{message}: expected value does not equal the actual value"
-            printfn $"\texpected: {expected}"
-            printfn $"\tactual: {actual}"
-        
-    let private assertTrue message (predicate : bool) =
-        if predicate then
-            printfn $"{message}: predicate is true as expected"
-        else
-            printfn $"ERROR"
-            printfn $"{message}: predicate is false"
+    open LuceneInAction2E.Common.TestHelper
             
     
     let testTerm () =
