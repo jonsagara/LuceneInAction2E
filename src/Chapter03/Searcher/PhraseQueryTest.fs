@@ -61,4 +61,12 @@ module PhraseQueryTest =
         
         tearDown indexSetup
         
-
+    let testMultiple () =
+        let indexSetup = setup()
+        
+        assertFalse "not close enough" (matched [| "quick"; "jumped"; "lazy" |] 3 indexSetup.Searcher)
+        assertTrue "just enough" (matched [| "quick"; "jumped"; "lazy" |] 4 indexSetup.Searcher)
+        assertFalse "almost but not quite" (matched [| "lazy"; "jumped"; "quick" |] 7 indexSetup.Searcher)
+        assertTrue "just right" (matched [| "lazy"; "jumped"; "quick" |] 8 indexSetup.Searcher)
+        
+        tearDown indexSetup

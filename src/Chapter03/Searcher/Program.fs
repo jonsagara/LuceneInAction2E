@@ -20,6 +20,7 @@ module Program =
         // BasicSearchingTest.testBooleanOrQuery()
         
         // PhraseQueryTest.testSlopComparison()
-        PhraseQueryTest.testReverse()
+        // PhraseQueryTest.testReverse()
+        PhraseQueryTest.testMultiple()
 
         0
