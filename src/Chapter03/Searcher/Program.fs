@@ -17,10 +17,11 @@ module Program =
         //BasicSearchingTest.testExclusiveNumericRangeQuery()
         //BasicSearchingTest.testPrefixQuery()
         //BasicSearchingTest.testBooleanAndQuery()
-        // BasicSearchingTest.testBooleanOrQuery()
+        //BasicSearchingTest.testBooleanOrQuery()
         
-        // PhraseQueryTest.testSlopComparison()
-        // PhraseQueryTest.testReverse()
-        PhraseQueryTest.testMultiple()
+        //PhraseQueryTest.testSlopComparison()
+        //PhraseQueryTest.testReverse()
+        //PhraseQueryTest.testMultiple()
+        PhraseQueryTest.testWildcard()
 
         0

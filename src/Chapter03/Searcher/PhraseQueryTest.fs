@@ -25,7 +25,25 @@ module PhraseQueryTest =
         indexWriter.AddDocument(doc)
         indexWriter.Commit()
         
-        { IndexDir = indexDir; Searcher = IndexSearcher(DirectoryReader.Open(indexDir)) }
+        { IndexDir = indexDir; 
+          Searcher = IndexSearcher(DirectoryReader.Open(indexDir)) }
+
+    let private indexSingleFieldDocs (fields : Field[]) =
+        let indexDir = new RAMDirectory()
+        let writerConfig = IndexWriterConfig(IndexProperties.luceneVersion, new WhitespaceAnalyzer(IndexProperties.luceneVersion))
+        use indexWriter = new IndexWriter(indexDir, writerConfig)
+
+        fields
+        |> Array.iter (fun field ->
+            let doc = Document()
+            doc.Add(field)
+            indexWriter.AddDocument(doc)
+            )
+
+        indexWriter.Commit()
+
+        { IndexDir = indexDir; 
+          Searcher = IndexSearcher(DirectoryReader.Open(indexDir)) }
         
     let private tearDown (setupResult : SetupResult) =
         setupResult.IndexDir.Dispose()
@@ -40,6 +58,11 @@ module PhraseQueryTest =
         
         let matches = searcher.Search(query, 10)
         matches.TotalHits > 0
+
+
+    //
+    // Tests
+    //
     
     let testSlopComparison () =
         let indexSetup = setup()
@@ -69,4 +92,23 @@ module PhraseQueryTest =
         assertFalse "almost but not quite" (matched [| "lazy"; "jumped"; "quick" |] 7 indexSetup.Searcher)
         assertTrue "just right" (matched [| "lazy"; "jumped"; "quick" |] 8 indexSetup.Searcher)
         
+        tearDown indexSetup
+        
+    let testWildcard () =
+        let (fields : Field[]) = [|
+            TextField("contents", "wild", Field.Store.YES)
+            TextField("contents", "child", Field.Store.YES)
+            TextField("contents", "mild", Field.Store.YES)
+            TextField("contents", "mildew", Field.Store.YES)
+            |]
+
+        let indexSetup = indexSingleFieldDocs fields
+
+        let query = WildcardQuery(Term("contents", "?ild*"))
+        let matches = indexSetup.Searcher.Search(query, 10)
+
+        assertEquals "child no match" 3 matches.TotalHits
+        assertEqualsFloatsWithDelta "score the same" matches.ScoreDocs[0].Score matches.ScoreDocs[1].Score 0.0f
+        assertEqualsFloatsWithDelta "score the same" matches.ScoreDocs[1].Score matches.ScoreDocs[2].Score 0.0f
+
         tearDown indexSetup
