@@ -112,3 +112,22 @@ module PhraseQueryTest =
         assertEqualsFloatsWithDelta "score the same" matches.ScoreDocs[1].Score matches.ScoreDocs[2].Score 0.0f
 
         tearDown indexSetup
+
+    let testFuzzy () =
+        let fields : Field[] = [|
+            TextField("contents", "fuzzy", Field.Store.YES)
+            TextField("contents", "wuzzy", Field.Store.YES)
+            |]
+
+        let indexSetup = indexSingleFieldDocs fields
+
+        let query = FuzzyQuery(Term("contents", "wuzza"))
+        let matches = indexSetup.Searcher.Search(query, 10)
+
+        assertEquals "both close enough" 2 matches.TotalHits
+        assertTrue "wuzzy closer than fuzzy" (matches.ScoreDocs[0].Score <> matches.ScoreDocs[1].Score)
+
+        let doc = indexSetup.Searcher.Doc(matches.ScoreDocs[0].Doc)
+        assertEquals "wuzza bear" "wuzzy" (doc.Get("contents"))
+
+        tearDown indexSetup

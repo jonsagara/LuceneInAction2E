@@ -22,6 +22,7 @@ module Program =
         //PhraseQueryTest.testSlopComparison()
         //PhraseQueryTest.testReverse()
         //PhraseQueryTest.testMultiple()
-        PhraseQueryTest.testWildcard()
+        //PhraseQueryTest.testWildcard()
+        PhraseQueryTest.testFuzzy()
 
         0
