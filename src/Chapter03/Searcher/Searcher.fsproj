@@ -6,6 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="QueryParserTest.fs" />
 		<Compile Include="BasicSearchingTest.fs" />
 		<Compile Include="PhraseQueryTest.fs" />
 		<Compile Include="Program.fs" />

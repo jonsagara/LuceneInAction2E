@@ -23,6 +23,8 @@ module Program =
         //PhraseQueryTest.testReverse()
         //PhraseQueryTest.testMultiple()
         //PhraseQueryTest.testWildcard()
-        PhraseQueryTest.testFuzzy()
+        //PhraseQueryTest.testFuzzy()
+
+        QueryParserTest.testToString()
 
         0
