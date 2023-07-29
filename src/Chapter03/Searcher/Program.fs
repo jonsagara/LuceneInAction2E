@@ -25,6 +25,8 @@ module Program =
         //PhraseQueryTest.testWildcard()
         //PhraseQueryTest.testFuzzy()
 
-        QueryParserTest.testToString()
+        //QueryParserTest.testToString()
+        //QueryParserTest.testTermQuery()
+        QueryParserTest.testTermRangeQuery()
 
         0
