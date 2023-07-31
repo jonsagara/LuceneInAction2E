@@ -31,6 +31,7 @@ module Program =
         //QueryParserTest.testLowercasing()
         //QueryParserTest.testPhraseQuery()
         //QueryParserTest.testSlop()
-        QueryParserTest.testFuzzyQuery()
+        //QueryParserTest.testFuzzyQuery()
+        QueryParserTest.testGrouping()
 
         0

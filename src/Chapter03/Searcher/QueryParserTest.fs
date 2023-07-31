@@ -90,3 +90,17 @@ module QueryParserTest =
         // In the book, this returns a similarity of 0.7. For us, returns 2. The API appears to have changed in 4.x.
         let query2 = parser.Parse("kountry~0.7")
         printfn $"fuzzy 2: {query2} {query2.GetType().FullName}"
+
+    let testGrouping () =
+        use indexDir = FSDirectory.Open(IndexProperties.bookIndexDirFromBinFolder)
+        use indexReader = DirectoryReader.Open indexDir
+        let searcher = IndexSearcher indexReader
+
+        use analyzer = new StandardAnalyzer(IndexProperties.luceneVersion)
+        let parser = QueryParser(IndexProperties.luceneVersion, "subject", analyzer)
+        let query = parser.Parse("(agile OR extreme) AND methodology")
+        let matches = searcher.Search(query, 10)
+
+        assertTrue"Has Extremem Programming Explained" (TestUtil.hitsIncludeTitle searcher matches "Extreme Programming Explained")
+        assertTrue"Has The Pragmatic Programmer" (TestUtil.hitsIncludeTitle searcher matches "The Pragmatic Programmer")
+
