@@ -59,11 +59,23 @@ module QueryParserTest =
 
     let testPhraseQuery () =
         use analyzer = new StandardAnalyzer(IndexProperties.luceneVersion)
-        
         let parser = QueryParser(IndexProperties.luceneVersion, "field", analyzer)
+
         let query = parser.Parse("\"This is Some Phrase*\"")
         assertEquals "analyzed" "\"? ? some phrase\"" (query.ToString("field"))
 
         let query2 = parser.Parse("\"term\"")
         assertTrue "reduced to TermQuery" (query2.GetType() = typeof<TermQuery>)
+
+    let testSlop () =
+        use analyzer = new StandardAnalyzer(IndexProperties.luceneVersion)
+        let parser = QueryParser(IndexProperties.luceneVersion, "field", analyzer)
+
+        let query = parser.Parse("\"exact phrase\"")
+        assertEquals "zero slop" "\"exact phrase\"" (query.ToString("field"))
+
+        let parser2 = QueryParser(IndexProperties.luceneVersion, "field", analyzer)
+        parser2.PhraseSlop <- 5
+        let query2 = parser2.Parse("\"sloppy phrase\"")
+        assertEquals "sloppy, implicitly" "\"sloppy phrase\"~5" (query2.ToString("field"))
         

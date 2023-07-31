@@ -29,6 +29,7 @@ module Program =
         //QueryParserTest.testTermQuery()
         //QueryParserTest.testTermRangeQuery()
         //QueryParserTest.testLowercasing()
-        QueryParserTest.testPhraseQuery()
+        //QueryParserTest.testPhraseQuery()
+        QueryParserTest.testSlop()
 
         0
