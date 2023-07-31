@@ -43,3 +43,16 @@ module QueryParserTest =
         let query2 = parser.Parse("title2:{Q TO \"Tapestry in Action\" }")
         let matches2 = searcher.Search(query2, 10)
         assertFalse "Title is not in results" (TestUtil.hitsIncludeTitle searcher matches2 "Tapestry in Action")
+        
+    let testLowercasing () =
+        use analyzer = new WhitespaceAnalyzer(IndexProperties.luceneVersion)
+        
+        let parser = QueryParser(IndexProperties.luceneVersion, "field", analyzer)
+        let query = parser.Parse("PrefixQuery*")
+        assertEquals "lowercased" "prefixquery*" (query.ToString("field"))
+        
+        let parser2 = QueryParser(IndexProperties.luceneVersion, "field", analyzer)
+        parser2.LowercaseExpandedTerms <- false
+        let query2 = parser2.Parse("PrefixQuery*")
+        assertEquals "not lowercased" "PrefixQuery*" (query2.ToString("field"))
+        
