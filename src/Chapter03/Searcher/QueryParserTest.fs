@@ -7,6 +7,7 @@ open Lucene.Net.QueryParsers.Classic
 open LuceneInAction2E.Common
 open Lucene.Net.Analysis.Core
 open Lucene.Net.Store
+open Lucene.Net.Analysis.Standard
 
 module QueryParserTest =
     
@@ -55,4 +56,14 @@ module QueryParserTest =
         parser2.LowercaseExpandedTerms <- false
         let query2 = parser2.Parse("PrefixQuery*")
         assertEquals "not lowercased" "PrefixQuery*" (query2.ToString("field"))
+
+    let testPhraseQuery () =
+        use analyzer = new StandardAnalyzer(IndexProperties.luceneVersion)
+        
+        let parser = QueryParser(IndexProperties.luceneVersion, "field", analyzer)
+        let query = parser.Parse("\"This is Some Phrase*\"")
+        assertEquals "analyzed" "\"? ? some phrase\"" (query.ToString("field"))
+
+        let query2 = parser.Parse("\"term\"")
+        assertTrue "reduced to TermQuery" (query2.GetType() = typeof<TermQuery>)
         
