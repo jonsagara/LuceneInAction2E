@@ -79,3 +79,14 @@ module QueryParserTest =
         let query2 = parser2.Parse("\"sloppy phrase\"")
         assertEquals "sloppy, implicitly" "\"sloppy phrase\"~5" (query2.ToString("field"))
         
+    let testFuzzyQuery () =
+        use analyzer = new StandardAnalyzer(IndexProperties.luceneVersion)
+        let parser = QueryParser(IndexProperties.luceneVersion, "field", analyzer)
+
+        // In the book, this returns a similarity of 0.5. For us, returns 2. The API appears to have changed in 4.x.
+        let query = parser.Parse("kountry~")
+        printfn $"fuzzy: {query} {query.GetType().FullName}"
+
+        // In the book, this returns a similarity of 0.7. For us, returns 2. The API appears to have changed in 4.x.
+        let query2 = parser.Parse("kountry~0.7")
+        printfn $"fuzzy 2: {query2} {query2.GetType().FullName}"
