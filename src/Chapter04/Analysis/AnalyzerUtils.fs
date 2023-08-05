@@ -45,10 +45,8 @@ module AnalyzerUtils =
         use stream = analyzer.GetTokenStream("contents", new StringReader(text))
         
         // Display the type of Analyzer and TokenStream.
-        let analyzerTypeName = analyzer.GetType().FullName
-        printfn $"Analyzer type: {analyzerTypeName}"
-        let tsTypeName = stream.GetType().FullName
-        printfn $"TokenStream type: {tsTypeName}"
+        printfn $"{nameof Analyzer} type: {analyzer.GetType().FullName}"
+        printfn $"{nameof TokenStream} type: {stream.GetType().FullName}"
 
         //
         // NOTE: You interact with a separate reused attribute interface for each element of the token (term, offsets, 
