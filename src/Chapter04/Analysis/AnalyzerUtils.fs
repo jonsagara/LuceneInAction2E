@@ -17,6 +17,12 @@ module AnalyzerUtils =
         | true -> Some (stream.GetAttribute<'a>())
         | false -> None
 
+    /// Deconstructs the option type and retrieves the underlying IAttribute-derived class's property value.
+    let private getAttributePropertyValue<'a, 'b when 'a :> IAttribute> (propertyGetter : 'a -> 'b) (defaultValue : 'b) (attribute : 'a option) : 'b =
+        attribute
+        |> Option.map propertyGetter
+        |> Option.defaultValue defaultValue
+
 
     //
     // Public functions
@@ -73,10 +79,11 @@ module AnalyzerUtils =
         let mutable position = 0
 
         while stream.IncrementToken() do
-            let increment = 
-                match posIncrAttr with
-                | Some pia -> pia.PositionIncrement
-                | None -> 1 // By default, all tokens created by Analyzers and Tokenizers have a PositionIncrement of 1.
+
+            // By default, all tokens created by Analyzers and Tokenizers have a PositionIncrement of 1.
+            let increment =
+                posIncrAttr 
+                |> getAttributePropertyValue (fun pia -> pia.PositionIncrement) 1
 
             if increment > 0 then do
                 position <- position + increment
@@ -84,9 +91,8 @@ module AnalyzerUtils =
                 printf $"{position}: "
 
             let typeName =
-                match typeAttr with
-                | Some ta -> ta.Type
-                | None -> "(no ITypeAttribute in TokenStream)"
+                typeAttr 
+                |> getAttributePropertyValue (fun ta -> ta.Type) "(no ITypeAttribute in TokenStream)"
 
             printf $"[{term}:{offset.StartOffset}->{offset.EndOffset}:{typeName}] "
 
