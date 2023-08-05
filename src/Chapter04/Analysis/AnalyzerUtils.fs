@@ -38,16 +38,18 @@ module AnalyzerUtils =
 
         // Unlike the book, which targets Lucene 3, SimpleAnalyzer doesn't have an IPositionIncrementAttribute. Look in 
         //   the Lucene.NET source file CharTokenizer.cs in the Init() method.
-        let mutable posIncr : IPositionIncrementAttribute = null
-        if stream.HasAttribute<IPositionIncrementAttribute>() then do
-            posIncr <- stream.GetAttribute<IPositionIncrementAttribute>()
+        let posIncrAttr = 
+            match stream.HasAttribute<IPositionIncrementAttribute>() with
+            | true -> Some (stream.GetAttribute<IPositionIncrementAttribute>())
+            | false -> None
 
         let offset = stream.GetAttribute<IOffsetAttribute>()
 
         // Same for Type.
-        let mutable ``type`` : ITypeAttribute = null
-        if stream.HasAttribute<ITypeAttribute>() then do
-            ``type`` <- stream.GetAttribute<ITypeAttribute>()
+        let typeAttr =
+            match stream.HasAttribute<ITypeAttribute>() with
+            | true -> Some (stream.GetAttribute<ITypeAttribute>())
+            | false -> None
 
         stream.Reset()
 
@@ -55,20 +57,19 @@ module AnalyzerUtils =
 
         while stream.IncrementToken() do
             let increment = 
-                match posIncr |> isNull |> not with
-                | true -> posIncr.PositionIncrement
-                // By default, all tokens created by Analyzers and Tokenizers have a PositionIncrement of 1.
-                | false -> 1
+                match posIncrAttr with
+                | Some pia -> pia.PositionIncrement
+                | None -> 1 // By default, all tokens created by Analyzers and Tokenizers have a PositionIncrement of 1.
 
             if increment > 0 then do
                 position <- position + increment
                 printfn ""
                 printf $"{position}: "
 
-            let typeName = 
-                match ``type`` |> isNull |> not with
-                | true -> ``type``.Type
-                | false -> "(no ITypeAttribute in TokenStream)"
+            let typeName =
+                match typeAttr with
+                | Some ta -> ta.Type
+                | None -> "(no ITypeAttribute in TokenStream)"
 
             printf $"[{term}:{offset.StartOffset}->{offset.EndOffset}:{typeName}] "
 
