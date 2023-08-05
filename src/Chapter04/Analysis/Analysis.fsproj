@@ -6,6 +6,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Compile Include="AnalyzerUtils.fs" />
+		<Compile Include="AnalyzerDemo.fs" />
 		<Compile Include="Program.fs" />
 	</ItemGroup>
 
