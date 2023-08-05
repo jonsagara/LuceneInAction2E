@@ -3,8 +3,24 @@
 open System.IO
 open Lucene.Net.Analysis
 open Lucene.Net.Analysis.TokenAttributes
+open Lucene.Net.Util
 
 module AnalyzerUtils =
+
+    //
+    // Private functions
+    //
+
+    /// If the TokenStream has the given attribute, get it and return it.
+    let private getAttribute<'a when 'a :> IAttribute> (stream : TokenStream) =
+        match stream.HasAttribute<'a>() with
+        | true -> Some (stream.GetAttribute<'a>())
+        | false -> None
+
+
+    //
+    // Public functions
+    //
 
     /// Iterate through the TokenStream and display each term.
     let displayTokensFromTokenStream (stream : TokenStream) =
@@ -47,18 +63,12 @@ module AnalyzerUtils =
 
         // Unlike the book, which targets Lucene 3, SimpleAnalyzer doesn't have an IPositionIncrementAttribute. Look in 
         //   the Lucene.NET source file CharTokenizer.cs in the Init() method.
-        let posIncrAttr = 
-            match stream.HasAttribute<IPositionIncrementAttribute>() with
-            | true -> Some (stream.GetAttribute<IPositionIncrementAttribute>())
-            | false -> None
+        let posIncrAttr = getAttribute<IPositionIncrementAttribute> stream
 
         let offset = stream.GetAttribute<IOffsetAttribute>()
 
-        // Same for Type.
-        let typeAttr =
-            match stream.HasAttribute<ITypeAttribute>() with
-            | true -> Some (stream.GetAttribute<ITypeAttribute>())
-            | false -> None
+        // SimpleAnalyzer also doesn't have an ITypeAttribute.
+        let typeAttr = getAttribute<ITypeAttribute> stream
 
         stream.Reset()
 
