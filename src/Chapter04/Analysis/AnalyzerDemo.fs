@@ -29,7 +29,7 @@ module AnalyzerDemo =
             AnalyzerUtils.displayTokens analyzer text
             printfn ""
 
-        ()
+        printfn ""
 
     let doDemo (args : string[]) =
         let mutable strings = _examples
