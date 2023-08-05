@@ -34,6 +34,15 @@ module AnalyzerUtils =
         let tsTypeName = stream.GetType().FullName
         printfn $"TokenStream type: {tsTypeName}"
 
+        //
+        // NOTE: You interact with a separate reused attribute interface for each element of the token (term, offsets, 
+        //   position increments, etc.). You first obtain the concrete implemtation of the attributes of interest. Then,
+        //   you iterate through all tokens by calling IncrementToken(). This method returns true if it has advanced to a
+        //   new token and false once you've exhausted the stream. You then interact with the previously obtained 
+        //   attributes to get that attribute's value for each token. When IncrementToken() returns true, all attributes
+        //   within it will have altered their internal state to the next token.
+        //
+
         let term = stream.GetAttribute<ICharTermAttribute>()
 
         // Unlike the book, which targets Lucene 3, SimpleAnalyzer doesn't have an IPositionIncrementAttribute. Look in 
