@@ -40,4 +40,7 @@ module AnalyzerDemo =
         for text in strings do
             analyze text
 
+    let doDemoWithFullDetails () =
+        AnalyzerUtils.displayTokensWithFullDetails (new SimpleAnalyzer(IndexProperties.luceneVersion)) "The quick brown fox...."
+
 

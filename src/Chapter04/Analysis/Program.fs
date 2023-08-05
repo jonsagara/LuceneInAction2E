@@ -7,6 +7,7 @@ module Program =
     [<EntryPoint>]
     let main argv =
         
-        AnalyzerDemo.doDemo (Array.Empty<string>())
+        //AnalyzerDemo.doDemo (Array.Empty<string>())
+        AnalyzerDemo.doDemoWithFullDetails ()
 
         0
