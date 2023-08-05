@@ -23,9 +23,9 @@ module AnalyzerDemo =
         printfn $"Analyzing \"{text}\""
 
         for analyzer in _analyzers do
-            let name = analyzer.GetType().Name
-            printfn $"   {name}:"
-            printf $"     "
+            let name = analyzer.GetType().FullName
+            printfn $"  {name}:"
+            printf $"    "
             AnalyzerUtils.displayTokens analyzer text
             printfn ""
 

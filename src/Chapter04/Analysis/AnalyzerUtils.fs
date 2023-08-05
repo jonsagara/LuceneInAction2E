@@ -20,6 +20,7 @@ module AnalyzerUtils =
     /// Analyze the text using the given Analyzer. Get the analyzer's token stream, and then 
     /// print each token to the screen.
     let displayTokens (analyzer : Analyzer) (text : string) =
+        // NOTE: the fieldName "contents" is arbitrary.
         use tokenStream = analyzer.GetTokenStream("contents", new StringReader(text))
         displayTokensFromTokenStream tokenStream
     
