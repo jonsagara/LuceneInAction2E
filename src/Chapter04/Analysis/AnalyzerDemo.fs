@@ -48,4 +48,9 @@ module AnalyzerDemo =
 
         AnalyzerUtils.assertAnalyzesTo sa2 "The quick brown..." [| "quick"; "brown" |]
 
+    let testStopAnalyzerFlawed () =
+        use saFlawed = new StopAnalyzerFlawed()
+
+        AnalyzerUtils.assertAnalyzesTo saFlawed "The quick brown..." [| "the"; "quick"; "brown" |]
+
 
