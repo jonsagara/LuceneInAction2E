@@ -43,4 +43,9 @@ module AnalyzerDemo =
     let doDemoWithFullDetails () =
         AnalyzerUtils.displayTokensWithFullDetails (new SimpleAnalyzer(IndexProperties.luceneVersion)) "The quick brown fox...."
 
+    let testStopAnalyzer2 () =
+        use sa2 = new StopAnalyzer2()
+
+        AnalyzerUtils.assertAnalyzesTo sa2 "The quick brown..." [| "quick"; "brown" |]
+
 

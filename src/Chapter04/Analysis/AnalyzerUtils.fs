@@ -4,6 +4,7 @@ open System.IO
 open Lucene.Net.Analysis
 open Lucene.Net.Analysis.TokenAttributes
 open Lucene.Net.Util
+open LuceneInAction2E.Common.TestHelper
 
 module AnalyzerUtils =
 
@@ -98,3 +99,17 @@ module AnalyzerUtils =
 
         printfn ""
     
+    let assertAnalyzesTo (analyzer : Analyzer) (input : string) (output : string[]) =
+        // NOTE: the fieldName "field" is arbitrary.
+        use stream = analyzer.GetTokenStream("field", new StringReader(input))
+
+        let termAttr = stream.GetAttribute<ICharTermAttribute>()
+
+        stream.Reset()
+        
+        for expected in output do
+            assertTrue "IncrementToken() true" (stream.IncrementToken())
+            assertEquals "Expected term" expected (termAttr.ToString())
+            
+        assertFalse "IncrementToken() false" (stream.IncrementToken())
+

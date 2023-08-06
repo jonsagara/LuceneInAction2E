@@ -8,6 +8,7 @@ module Program =
     let main argv =
         
         //AnalyzerDemo.doDemo (Array.Empty<string>())
-        AnalyzerDemo.doDemoWithFullDetails ()
+        //AnalyzerDemo.doDemoWithFullDetails ()
+        AnalyzerDemo.testStopAnalyzer2 ()
 
         0
