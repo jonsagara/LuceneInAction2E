@@ -36,22 +36,15 @@ type StopAnalyzer2 =
 
 
     override this.CreateComponents (fieldName : string, reader : TextReader) =
-        (* Base:
-        Tokenizer source = new LowerCaseTokenizer(m_matchVersion, reader);
-        return new TokenStreamComponents(source, new StopFilter(m_matchVersion, source, m_stopwords));
-        *)
+        //base.CreateComponents(fieldName, reader)
 
         let letterTokenizer = new LetterTokenizer(IndexProperties.luceneVersion, reader)
         let lowerCaseFilter = new LowerCaseFilter(IndexProperties.luceneVersion, letterTokenizer)
         let stopFilter = new StopFilter(IndexProperties.luceneVersion,lowerCaseFilter, this._stopWords)
 
-        let tokenStreamComponents = new TokenStreamComponents(letterTokenizer, stopFilter)
-        tokenStreamComponents
+        new TokenStreamComponents(letterTokenizer, stopFilter)
 
-        //base.CreateComponents(fieldName, reader)
-        //null
-
-
+    // Let Analyzer take care of loading the TokenStream from the above components.
     //member this.GetTokenStream (fieldName : string, reader : TextReader) =
     //    // Divide the text at non-letters.
     //    let letterTokenizer = new LetterTokenizer(IndexProperties.luceneVersion, reader)
