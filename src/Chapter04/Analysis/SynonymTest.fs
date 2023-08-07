@@ -15,21 +15,6 @@ open Lucene.Net.Analysis.TokenAttributes
 module SynonymTest =
 
     let testJumps () =
-        
-        //use directory = new RAMDirectory()
-        //use analyzer = new SynonymAnalyzer(TestSynonymEngine())
-                
-        //let writerConfig = IndexWriterConfig(IndexProperties.luceneVersion, analyzer)
-        //writerConfig.OpenMode <- OpenMode.CREATE
-        //use writer = new IndexWriter(directory, writerConfig)
-
-        //let docToAdd = Document()
-        //docToAdd.Add(TextField("contents", "The quick brown fox jumps over the lazy dog", Field.Store.YES))
-        //writer.AddDocument(docToAdd)
-        //writer.Commit()
-
-        //use reader = DirectoryReader.Open(directory)
-        //let searcher = IndexSearcher(reader)
 
         use analyzer = new SynonymAnalyzer(TestSynonymEngine())
         use stream = analyzer.GetTokenStream("contents", new StringReader("jumps"))
@@ -55,7 +40,8 @@ module SynonymTest =
                 // This is the initial term. The Position Increment should be 1.
                 expectedPos <- 1
             else
-                // This is a synonym. The Position Increment should be 0.
+                // This is a synonym. The Position Increment should be 0. In other words, synonyms are
+                //   place in the same position as the initial word.
                 expectedPos <- 0
 
             assertEquals "Expected Position Increment" expectedPos (posIncrAttr.PositionIncrement)
@@ -76,4 +62,36 @@ module SynonymTest =
         //let docReadFromSearcher = searcher.Doc(docId)
         //assertEquals "Sounds Like" "cool cat" (docReadFromSearcher.Get("contents"))
 
-        ()
+    let testSearchByAPI () =
+        
+        //
+        // Setup
+        //
+
+        use directory = new RAMDirectory()
+        use analyzer = new SynonymAnalyzer(TestSynonymEngine())
+                
+        let writerConfig = IndexWriterConfig(IndexProperties.luceneVersion, analyzer)
+        writerConfig.OpenMode <- OpenMode.CREATE
+        use writer = new IndexWriter(directory, writerConfig)
+
+        let docToAdd = Document()
+        docToAdd.Add(TextField("content", "The quick brown fox jumps over the lazy dog", Field.Store.YES))
+        writer.AddDocument(docToAdd)
+        writer.Commit()
+
+        use reader = DirectoryReader.Open(directory)
+        let searcher = IndexSearcher(reader)
+
+
+        //
+        // Test
+        //
+
+        let termQuery = TermQuery(Term("content", "hops"))
+        assertEquals "TermQuery hit count" 1 (TestUtil.hitCount searcher termQuery)
+
+        let phraseQuery = PhraseQuery()
+        phraseQuery.Add(Term("content", "fox"))
+        phraseQuery.Add(Term("content", "hops"))
+        assertEquals "PhraseQuery hit count" 1 (TestUtil.hitCount searcher phraseQuery)

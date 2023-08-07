@@ -15,6 +15,7 @@ module Program =
         //SoundsLikeTest.testKoolKat ()
         //AnalyzerDemo.displayMetaphoneReplacementTokens ()
 
-        SynonymTest.testJumps ()
+        //SynonymTest.testJumps ()
+        SynonymTest.testSearchByAPI ()
 
         0

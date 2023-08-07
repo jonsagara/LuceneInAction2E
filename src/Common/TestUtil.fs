@@ -17,3 +17,7 @@ module TestUtil =
 
         anyHitsIncludeTitle
 
+    /// Executes the query and returns the Total Hits.
+    let hitCount (searcher : IndexSearcher) (query : Query) =
+        searcher.Search(query, 1).TotalHits
+
