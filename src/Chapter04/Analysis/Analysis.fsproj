@@ -9,9 +9,13 @@
 		<Compile Include="SoundsLike\MetaphoneHelper.fs" />
 		<Compile Include="SoundsLike\MetaphoneReplacementFilter.fs" />
 		<Compile Include="SoundsLike\MetaphoneReplacementAnalyzer.fs" />
+		<Compile Include="Synonyms\SynonymEngine.fs" />
+		<Compile Include="Synonyms\SynonymFilter.fs" />
+		<Compile Include="Synonyms\SynonymAnalyzer.fs" />
 		<Compile Include="StopAnalyzerFlawed.fs" />
 		<Compile Include="StopAnalyzer2.fs" />
 		<Compile Include="AnalyzerUtils.fs" />
+		<Compile Include="SynonymTest.fs" />
 		<Compile Include="SoundsLikeTest.fs" />
 		<Compile Include="AnalyzerDemo.fs" />
 		<Compile Include="Program.fs" />

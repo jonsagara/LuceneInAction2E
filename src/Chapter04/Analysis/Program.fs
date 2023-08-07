@@ -13,6 +13,8 @@ module Program =
         //AnalyzerDemo.testStopAnalyzerFlawed ()
 
         //SoundsLikeTest.testKoolKat ()
-        AnalyzerDemo.displayMetaphoneReplacementTokens ()
+        //AnalyzerDemo.displayMetaphoneReplacementTokens ()
+
+        SynonymTest.testJumps ()
 
         0
