@@ -17,6 +17,7 @@ module Program =
 
         //SynonymTest.testJumps ()
         //SynonymTest.testSearchByAPI ()
-        SynonymTest.testWithQueryParser ()
+        //SynonymTest.testWithQueryParser ()
+        SynonymTest.viewSyonymAnalyzerTokens (Array.Empty<string>())
 
         0

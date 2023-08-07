@@ -122,3 +122,6 @@ module SynonymTest =
 
         let standardQueryAsString = standardQuery.ToString("content")
         printfn $"With {nameof StandardAnalyzer}, \"fox jumps\" parses to {standardQueryAsString}"
+
+    let viewSyonymAnalyzerTokens (args : string[]) =
+        AnalyzerUtils.displayTokensWithPositions (new SynonymAnalyzer(TestSynonymEngine())) "The quick brown fox jumps over the lazy dog"

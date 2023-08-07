@@ -99,6 +99,28 @@ module AnalyzerUtils =
             printf $"[{term}:{offset.StartOffset}->{offset.EndOffset}:{typeName}] "
 
         printfn ""
+
+    let displayTokensWithPositions (analyzer : Analyzer) (text : string) =
+        // NOTE: the fieldName "contents" is arbitrary.
+        use stream = analyzer.GetTokenStream("contents", new StringReader(text))
+
+        let termAttr = stream.GetAttribute<ICharTermAttribute>()
+        let posIncrAttr = stream.GetAttribute<IPositionIncrementAttribute>()
+
+        stream.Reset()
+
+        let mutable position = 0
+
+        while stream.IncrementToken() do
+            let increment = posIncrAttr.PositionIncrement
+            if (increment > 0) then do
+                position <- position + increment
+                printfn ""
+                printf $"{position}: "
+
+            printf $"[{termAttr.ToString()}] "
+        
+        printfn ""
     
     let assertAnalyzesTo (analyzer : Analyzer) (input : string) (output : string[]) =
         // NOTE: the fieldName "field" is arbitrary.
