@@ -39,14 +39,14 @@ type SynonymFilter(input : TokenStream, engine : ISynonymEngine) as this =
             //
 
             // Get a synonym.
-            let syn = _synonymStack.Pop()
+            let synonym = _synonymStack.Pop()
 
             // Restore the state of attributes to when the synonyms were identified.
             this.RestoreState(_current)
 
             // Copy the synonym to the term, using the same position as the original term.
-            let synChars = syn.ToCharArray()
-            _termAttr.CopyBuffer(synChars, 0, synChars.Length)
+            let synonymChars = synonym.ToCharArray()
+            _termAttr.CopyBuffer(synonymChars, 0, synonymChars.Length)
             _posIncrAttr.PositionIncrement <- 0
 
             // Tell the caller to try to keep processing terms.
@@ -60,7 +60,8 @@ type SynonymFilter(input : TokenStream, engine : ISynonymEngine) as this =
             if this.AddAliasesToStack() then do
                 _current <- this.CaptureState()
             
-            // Tell the caller to try to keep processing terms. This really means that they'll process any
-            //   added synonyms.
+            // Tell the caller to try to keep processing terms. 
+            // * If the term has synonyms, they'll process any added synonyms without calling IncrementToken(). 
+            // * Otherwise, they'll call IncrementToken() again to try to get the next term.
             true
     

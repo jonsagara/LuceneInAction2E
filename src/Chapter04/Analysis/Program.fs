@@ -16,6 +16,7 @@ module Program =
         //AnalyzerDemo.displayMetaphoneReplacementTokens ()
 
         //SynonymTest.testJumps ()
-        SynonymTest.testSearchByAPI ()
+        //SynonymTest.testSearchByAPI ()
+        SynonymTest.testWithQueryParser ()
 
         0

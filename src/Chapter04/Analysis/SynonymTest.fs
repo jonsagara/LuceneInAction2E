@@ -1,6 +1,5 @@
 ﻿namespace LuceneInAction2E.Chapter04.Analysis
 
-open LuceneInAction2E.Chapter04.Analysis.SoundsLike
 open Lucene.Net.Documents
 open Lucene.Net.Index
 open Lucene.Net.QueryParsers.Classic
@@ -11,8 +10,42 @@ open LuceneInAction2E.Common.TestHelper
 open LuceneInAction2E.Chapter04.Analysis.Synonym
 open System.IO
 open Lucene.Net.Analysis.TokenAttributes
+open Lucene.Net.Analysis.Standard
+open System
 
 module SynonymTest =
+
+    type private TestSetupResult() =
+        
+        member val Searcher : IndexSearcher = null with get, set
+        
+        interface IDisposable with
+            member this.Dispose() = 
+                ()
+        
+
+    let private setupTest () =
+        let directory = new RAMDirectory()
+        use synonymAnalyzer = new SynonymAnalyzer(TestSynonymEngine())
+                
+        let writerConfig = IndexWriterConfig(IndexProperties.luceneVersion, synonymAnalyzer)
+        writerConfig.OpenMode <- OpenMode.CREATE
+        use writer = new IndexWriter(directory, writerConfig)
+
+        let docToAdd = Document()
+        docToAdd.Add(TextField("content", "The quick brown fox jumps over the lazy dog", Field.Store.YES))
+        writer.AddDocument(docToAdd)
+        writer.Dispose()
+
+        let reader = DirectoryReader.Open(directory)
+        let s = IndexSearcher(reader)
+
+        new TestSetupResult(Searcher = IndexSearcher(reader))
+
+
+    //
+    // Public functions
+    //
 
     let testJumps () =
 
@@ -41,7 +74,7 @@ module SynonymTest =
                 expectedPos <- 1
             else
                 // This is a synonym. The Position Increment should be 0. In other words, synonyms are
-                //   place in the same position as the initial word.
+                //   placed in the same position as the initial word.
                 expectedPos <- 0
 
             assertEquals "Expected Position Increment" expectedPos (posIncrAttr.PositionIncrement)
@@ -49,49 +82,43 @@ module SynonymTest =
             ix <- ix + 1
 
         assertEquals "Term count" 3 ix
-        
 
-        //// Search with query "kool kat", using the same Metaphone Analyzer as the indexer.
-        //let parser = QueryParser(IndexProperties.luceneVersion, "contents", analyzer)
-        //let query = parser.Parse("kool kat")
-
-        //let hits = searcher.Search(query, 1)
-        //assertEquals "Hit count" 1 hits.TotalHits
-
-        //let docId = hits.ScoreDocs[0].Doc
-        //let docReadFromSearcher = searcher.Doc(docId)
-        //assertEquals "Sounds Like" "cool cat" (docReadFromSearcher.Get("contents"))
 
     let testSearchByAPI () =
         
-        //
-        // Setup
-        //
+        use setupResult = setupTest()
 
-        use directory = new RAMDirectory()
-        use analyzer = new SynonymAnalyzer(TestSynonymEngine())
-                
-        let writerConfig = IndexWriterConfig(IndexProperties.luceneVersion, analyzer)
-        writerConfig.OpenMode <- OpenMode.CREATE
-        use writer = new IndexWriter(directory, writerConfig)
-
-        let docToAdd = Document()
-        docToAdd.Add(TextField("content", "The quick brown fox jumps over the lazy dog", Field.Store.YES))
-        writer.AddDocument(docToAdd)
-        writer.Commit()
-
-        use reader = DirectoryReader.Open(directory)
-        let searcher = IndexSearcher(reader)
-
-
-        //
-        // Test
-        //
-
+        // TermQuery
         let termQuery = TermQuery(Term("content", "hops"))
-        assertEquals "TermQuery hit count" 1 (TestUtil.hitCount searcher termQuery)
+        assertEquals "TermQuery hit count" 1 (TestUtil.hitCount setupResult.Searcher termQuery)
 
+        // PhraseQuery
         let phraseQuery = PhraseQuery()
         phraseQuery.Add(Term("content", "fox"))
         phraseQuery.Add(Term("content", "hops"))
-        assertEquals "PhraseQuery hit count" 1 (TestUtil.hitCount searcher phraseQuery)
+        assertEquals "PhraseQuery hit count" 1 (TestUtil.hitCount setupResult.Searcher phraseQuery)
+
+
+    let testWithQueryParser () =
+        
+        use setupResult = setupTest ()
+
+        // SynonymAnalyzer
+        use synonymAnalyzer = new SynonymAnalyzer(TestSynonymEngine())
+        let synonymParser = QueryParser(IndexProperties.luceneVersion, "content", synonymAnalyzer)
+        let synonymQuery = synonymParser.Parse("\"fox jumps\"")
+
+        assertEquals "Synonym query hits" 1 (TestUtil.hitCount setupResult.Searcher synonymQuery)
+
+        let synonymQueryAsString = synonymQuery.ToString("content")
+        printfn $"With {nameof SynonymAnalyzer}, \"fox jumps\" parses to {synonymQueryAsString}"
+
+        // StandardAnalyzer
+        use standardAnalyzer = new StandardAnalyzer(IndexProperties.luceneVersion)
+        let standardParser = QueryParser(IndexProperties.luceneVersion, "content", standardAnalyzer)
+        let standardQuery = standardParser.Parse("\"fox jumps\"")
+
+        assertEquals "Standard query hits" 1 (TestUtil.hitCount setupResult.Searcher standardQuery)
+
+        let standardQueryAsString = standardQuery.ToString("content")
+        printfn $"With {nameof StandardAnalyzer}, \"fox jumps\" parses to {standardQueryAsString}"

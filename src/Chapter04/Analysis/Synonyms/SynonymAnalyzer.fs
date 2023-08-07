@@ -4,7 +4,6 @@ open System.IO
 open Lucene.Net.Analysis
 open Lucene.Net.Analysis.Core
 open LuceneInAction2E.Common
-open Lucene.Net.Analysis.TokenAttributes
 open Lucene.Net.Analysis.Standard
 
 type SynonymAnalyzer(engine : ISynonymEngine) =
@@ -15,10 +14,6 @@ type SynonymAnalyzer(engine : ISynonymEngine) =
     override this.CreateComponents (fieldName : string, reader : TextReader) =
 
         let tokenizer = new StandardTokenizer(IndexProperties.luceneVersion, reader)
-
-        //// We need the Type Attribute so that we can change it to Metaphone after we replace the term with the 
-        ////   Metaphone-encoded term.
-        //letterTokenizer.AddAttribute<ITypeAttribute>() |> ignore
 
         let standardFilter = new StandardFilter(IndexProperties.luceneVersion, tokenizer)
         let lowerCaseFilter = new LowerCaseFilter(IndexProperties.luceneVersion, standardFilter)
