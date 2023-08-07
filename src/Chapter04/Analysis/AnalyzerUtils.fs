@@ -91,9 +91,10 @@ module AnalyzerUtils =
                 printfn ""
                 printf $"{position}: "
 
+            // By default, the token type is "word".
             let typeName =
                 typeAttr 
-                |> getAttributePropertyValue (fun ta -> ta.Type) "(no ITypeAttribute in TokenStream)"
+                |> getAttributePropertyValue (fun ta -> ta.Type) "word"
 
             printf $"[{term}:{offset.StartOffset}->{offset.EndOffset}:{typeName}] "
 

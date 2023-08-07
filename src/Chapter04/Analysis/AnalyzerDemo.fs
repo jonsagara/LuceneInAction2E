@@ -4,6 +4,7 @@ open Lucene.Net.Analysis
 open Lucene.Net.Analysis.Core
 open Lucene.Net.Analysis.Standard
 open LuceneInAction2E.Common
+open LuceneInAction2E.Chapter04.Analysis.SoundsLike
 
 module AnalyzerDemo =
 
@@ -53,6 +54,11 @@ module AnalyzerDemo =
 
         AnalyzerUtils.assertAnalyzesTo saFlawed "The quick brown..." [| "the"; "quick"; "brown" |]
 
+    let displayMetaphoneReplacementTokens () =
+        use analyzer = new MetaphoneReplacementAnalyzer()
+        
+        AnalyzerUtils.displayTokens analyzer "The quick brown fox jumped over the lazy dog"
 
+        printfn ""
 
-
+        AnalyzerUtils.displayTokens analyzer "Tha quik brown phox jumpd ovvar tha lazi dag"
