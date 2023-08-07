@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chapter03", "Chapter03", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chapter04", "Chapter04", "{3E2E27A2-D7DA-4694-ADB9-545730A9D3A3}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Analysis", "src\Chapter04\Analysis\Analysis.fsproj", "{0D115560-A37A-4E29-9D5C-3E482F4BE0EE}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Analysis", "src\Chapter04\Analysis\Analysis.fsproj", "{0D115560-A37A-4E29-9D5C-3E482F4BE0EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

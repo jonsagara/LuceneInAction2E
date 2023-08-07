@@ -10,6 +10,8 @@ module Program =
         //AnalyzerDemo.doDemo (Array.Empty<string>())
         //AnalyzerDemo.doDemoWithFullDetails ()
         //AnalyzerDemo.testStopAnalyzer2 ()
-        AnalyzerDemo.testStopAnalyzerFlawed ()
+        //AnalyzerDemo.testStopAnalyzerFlawed ()
+
+        SoundsLikeTest.testKoolKat ()
 
         0
